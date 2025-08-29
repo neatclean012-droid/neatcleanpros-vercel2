@@ -1,3 +1,4 @@
+import { Award, ShieldCheck, Clock, Sliders } from "lucide-react";
 import FAQ from "./FAQ";
 import React, { useEffect, useState } from "react";
 import { Phone, Calendar, MessageCircle, MapPin, ShieldCheck, Sparkles, CheckCircle2, Upload } from "lucide-react";
@@ -170,6 +171,78 @@ export default function NeatCleanProsLanding() {
           <p className="mt-2 text-slate-700">Jesup and a 40-mile radius: Waycross, Brunswick, Hinesville, Pooler, Richmond Hill.</p>
         </div>
       </section>
+      {/* PREMIUM PANEL */}
+<section className="py-16 bg-white">
+  <div className="max-w-6xl mx-auto px-4">
+    <h2 className="text-3xl font-bold text-center text-slate-900">
+      Premium Cleaning Made Simple
+    </h2>
+    <p className="text-center text-slate-600 mt-2">
+      Trusted cleaning services in Jesup and up to 40 miles: Waycross, Brunswick,
+      Hinesville, Pooler, and Richmond Hill.
+    </p>
+
+    <div className="grid md:grid-cols-2 gap-10 mt-12">
+      {/* Experienced */}
+      <div className="flex items-start gap-4">
+        <div className="shrink-0 w-12 h-12 rounded-xl bg-amber-100 grid place-items-center border border-amber-300">
+          <Award className="w-6 h-6 text-amber-600" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">Experienced</h3>
+          <p className="text-slate-600">
+            Owner-operated since 2019 and established as an LLC in 2025. We’ve served
+            hundreds of homes and small offices around Jesup and nearby cities using
+            premium supplies and a consistent process.
+          </p>
+        </div>
+      </div>
+
+      {/* Reliable */}
+      <div className="flex items-start gap-4">
+        <div className="shrink-0 w-12 h-12 rounded-xl bg-amber-100 grid place-items-center border border-amber-300">
+          <ShieldCheck className="w-6 h-6 text-amber-600" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">Reliable</h3>
+          <p className="text-slate-600">
+            Licensed & insured. We arrive on time with everything needed and finish
+            with a quality check. Not 100% happy? We’ll make it right.
+          </p>
+        </div>
+      </div>
+
+      {/* Convenient */}
+      <div className="flex items-start gap-4">
+        <div className="shrink-0 w-12 h-12 rounded-xl bg-amber-100 grid place-items-center border border-amber-300">
+          <Clock className="w-6 h-6 text-amber-600" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">Convenient</h3>
+          <p className="text-slate-600">
+            Book by call, email, or WhatsApp. One-time, weekly, or bi-weekly. Quotes
+            are fast—just share bedrooms, bathrooms, pets, and a preferred date.
+          </p>
+        </div>
+      </div>
+
+      {/* Flexible */}
+      <div className="flex items-start gap-4">
+        <div className="shrink-0 w-12 h-12 rounded-xl bg-amber-100 grid place-items-center border border-amber-300">
+          <Sliders className="w-6 h-6 text-amber-600" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">Flexible</h3>
+          <p className="text-slate-600">
+            Add Deep Clean, Move-In/Out, or extras like inside oven/fridge/cabinets.
+            We adapt to your schedule, products, and budget.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
       
       {/* FAQ Section */}
 <FAQ />
