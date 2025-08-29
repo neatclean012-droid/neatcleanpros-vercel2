@@ -1,7 +1,7 @@
 import { Award, ShieldCheck, Clock, Sliders } from "lucide-react";
 import FAQ from "./FAQ";
 import React, { useEffect, useState } from "react";
-import { Phone, Calendar, MessageCircle, MapPin, ShieldCheck, Sparkles, CheckCircle2, Upload } from "lucide-react";
+import { Phone, Calendar, MessageCircle, MapPin, Sparkles, CheckCircle2, Upload } from "lucide-react";
 
 /**
  * Galería con subida opcional vía Cloudinary Upload Widget.
