@@ -134,22 +134,34 @@ export default function NeatCleanProsLanding() {
         </div>
       </section>
 
-      {/* HOW IT WORKS (3 pasos) */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-center">How it works</h2>
-        <div className="mt-6 grid md:grid-cols-3 gap-6">
-          {[
-            { title: "Tell us about your home", desc: "Bedrooms, bathrooms, pets, preferred date.", icon: <Calendar className="w-5 h-5 text-brand-gold" /> },
-            { title: "We clean — you relax", desc: "Standard, Deep, Move in/out, Commercial.", icon: <Sparkles className="w-5 h-5 text-brand-gold" /> },
-            { title: "Enjoy a spotless place", desc: "Quality check and satisfaction guarantee.", icon: <CheckCircle2 className="w-5 h-5 text-brand-gold" /> },
-          ].map((s, i) => (
-            <div key={i} className="rounded-2xl border p-5">
-              <div className="flex items-center gap-2 font-semibold">{s.icon}{s.title}</div>
-              <p className="mt-2 text-slate-600">{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+     {/* HOW IT WORKS */}
+<section className="bg-gradient-to-b from-white to-slate-50 py-16">
+  <div className="max-w-6xl mx-auto px-4 text-center">
+    <h2 className="text-3xl font-bold text-slate-900 mb-12">How it works</h2>
+    <div className="grid md:grid-cols-3 gap-8">
+      
+      <div className="bg-white shadow-lg rounded-2xl p-6 border-t-4 border-yellow-500 hover:shadow-xl transition">
+        <Calendar className="w-10 h-10 text-yellow-500 mx-auto mb-4" />
+        <h3 className="font-bold text-lg mb-2">Tell us about your home</h3>
+        <p className="text-slate-600">Bedrooms, bathrooms, pets, preferred date.</p>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-2xl p-6 border-t-4 border-yellow-500 hover:shadow-xl transition">
+        <Sparkles className="w-10 h-10 text-yellow-500 mx-auto mb-4" />
+        <h3 className="font-bold text-lg mb-2">We clean — you relax</h3>
+        <p className="text-slate-600">Standard, Deep, Move in/out, Commercial.</p>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-2xl p-6 border-t-4 border-yellow-500 hover:shadow-xl transition">
+        <CheckCircle2 className="w-10 h-10 text-yellow-500 mx-auto mb-4" />
+        <h3 className="font-bold text-lg mb-2">Enjoy a spotless place</h3>
+        <p className="text-slate-600">Quality check and satisfaction guarantee.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+ 
 
       {/* AREAS */}
       <section className="bg-gradient-to-b from-white to-amber-50/30">
