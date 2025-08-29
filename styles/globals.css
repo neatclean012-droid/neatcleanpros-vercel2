@@ -3,4 +3,10 @@
 @tailwind utilities;
 
 html, body, #__next { height: 100%; }
-body { @apply bg-slate-50 text-slate-800; }
+body { @apply bg-white text-slate-800 antialiased; }
+
+.btn {
+  @apply inline-flex items-center justify-center px-5 py-3 rounded-lg font-semibold transition shadow-soft;
+}
+.btn-gold { @apply bg-brand-gold text-black hover:bg-brand-goldLight; }
+.btn-outline { @apply border border-white/30 text-white hover:bg-white hover:text-brand-black; }
