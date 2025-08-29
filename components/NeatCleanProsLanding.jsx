@@ -1,113 +1,215 @@
-import React from "react";
-import { Phone, Calendar, MessageCircle, MapPin } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Phone, Calendar, MessageCircle, MapPin, ShieldCheck, Sparkles, CheckCircle2, Upload } from "lucide-react";
 
-export default function NeatCleanProsLanding() {
-  const faqs = [
-    { q: "Do you include laundry?", a: "Bed linens & towels with deep cleans. Personal laundry on request (extra fee)." },
-    { q: "What areas do you cover?", a: "Jesup + 40 miles: Waycross, Brunswick, Hinesville, Pooler, Richmond Hill." },
-    { q: "Do you bring supplies?", a: "Yes. Professional equipment and premium products. We can use yours if preferred." },
-    { q: "How do I book?", a: "Click Book Now, send WhatsApp, or call the number in the header." },
-  ];
+/**
+ * Galería con subida opcional vía Cloudinary Upload Widget.
+ * Si configuras CLOUDINARY_CLOUD_NAME y CLOUDINARY_UPLOAD_PRESET (unsigned),
+ * verás un botón "Upload work photos". Si no, solo muestra la galería local.
+ */
+function Gallery() {
+  const [photos, setPhotos] = useState([
+    // Puedes iniciar con fotos locales si quieres:
+    // "/gallery/1.jpg", "/gallery/2.jpg"
+  ]);
+  const [widgetReady, setWidgetReady] = useState(false);
+
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "";
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "";
+
+  useEffect(() => {
+    // Cargar script del widget si hay credenciales
+    if (!cloudName || !uploadPreset) return;
+    const id = "cloudinary-widget";
+    if (document.getElementById(id)) { setWidgetReady(true); return; }
+    const s = document.createElement("script");
+    s.id = id;
+    s.src = "https://widget.cloudinary.com/v2.0/global/all.js";
+    s.onload = () => setWidgetReady(true);
+    document.body.appendChild(s);
+  }, [cloudName, uploadPreset]);
+
+  const openWidget = () => {
+    if (!window.cloudinary || !widgetReady) return;
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName,
+        uploadPreset,   // Debe ser "unsigned"
+        multiple: true,
+        sources: ["local", "camera", "url"],
+        cropping: false,
+        folder: "neatcleanpros",
+        maxFileSize: 5_000_000,
+        styles: { palette: { window: "#0B0F19", sourceBg: "#0B0F19", windowBorder: "#C9A227", tabIcon: "#C9A227", menuIcons: "#FFFFFF", textDark: "#FFFFFF", link: "#E7C766", action: "#C9A227", inactiveTabIcon: "#C9A227", error: "#ff4d4f", inProgress: "#C9A227", complete: "#2ecc71", sourceBg: "#0B0F19" } }
+      },
+      (err, result) => {
+        if (!err && result && result.event === "success") {
+          setPhotos((p) => [result.info.secure_url, ...p]);
+        }
+      }
+    );
+    widget.open();
+  };
 
   return (
+    <section className="max-w-6xl mx-auto px-4 py-10">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold">Recent Work</h2>
+        {cloudName && uploadPreset ? (
+          <button onClick={openWidget} className="btn bg-brand-gold text-black hover:bg-brand-goldLight inline-flex gap-2">
+            <Upload className="w-4 h-4" /> Upload work photos
+          </button>
+        ) : (
+          <p className="text-sm text-slate-500">
+            (Tip: activa subida gratis con Cloudinary. Te doy pasos abajo.)
+          </p>
+        )}
+      </div>
+
+      {photos.length === 0 ? (
+        <p className="text-slate-600">No photos yet. Add some to showcase your quality.</p>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {photos.map((src, i) => (
+            <div key={i} className="rounded-xl overflow-hidden border">
+              <img src={src} alt={`work-${i}`} className="w-full h-40 object-cover" />
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+export default function NeatCleanProsLanding() {
+  return (
     <div className="min-h-screen bg-white text-slate-800">
-      {/* Top bar */}
-      <header className="w-full border-b bg-white sticky top-0 z-40">
+
+      {/* Topbar negro */}
+      <header className="w-full bg-brand-black text-white sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src="/PROS.png" alt="NeatClean Pros" className="w-9 h-9" />
-            <span className="font-semibold">NeatClean Pros LLC</span>
+            <div className="leading-tight">
+              <p className="font-semibold tracking-wide">NeatClean Pros LLC</p>
+              <p className="text-xs text-white/70">Jesup, GA • Premium Cleaning</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            <a href="tel:+19122026006" className="bg-emerald-600 text-white px-3 py-2 rounded">Call</a>
-            <a href="https://wa.me/19122026006" className="bg-green-600 text-white px-3 py-2 rounded">WhatsApp</a>
-            <a href="mailto:neatclean012@gmail.com" className="bg-black text-white px-3 py-2 rounded">Email</a>
+            <a href="tel:+19122026006" className="btn btn-outline"><Phone className="w-4 h-4" /> Call</a>
+            <a href="https://wa.me/19122026006" className="btn btn-outline"><MessageCircle className="w-4 h-4" /> WhatsApp</a>
+            <a href="#book" className="btn bg-brand-gold text-black hover:bg-brand-goldLight"><Calendar className="w-4 h-4" /> Book</a>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="max-w-6xl mx-auto px-4 py-12 text-center">
-        <h1 className="text-4xl sm:text-5xl font-bold">We Clean, You Relax</h1>
-        <p className="mt-3 text-lg text-slate-600">
-          Premium cleaning services in Jesup and up to 40 miles around. Licensed & Insured. Experience since 2019.
-        </p>
-        <div className="mt-6 flex justify-center gap-3">
-          <a href="https://wa.me/19122026006" className="bg-emerald-600 text-white px-5 py-3 rounded inline-flex items-center gap-2">
-            <Calendar className="w-4 h-4" /> Book Now
-          </a>
-          <a href="tel:+19122026006" className="border px-5 py-3 rounded inline-flex items-center gap-2">
-            <Phone className="w-4 h-4" /> Call
-          </a>
-        </div>
-        <div className="mt-8 mx-auto max-w-2xl rounded-2xl overflow-hidden border">
-          <img src="/foto_neatclean.JPG" alt="Founders" className="w-full h-72 object-cover" />
+      {/* HERO negro + dorado */}
+      <section className="bg-brand-black text-white">
+        <div className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight">
+              We Clean, <span className="text-brand-gold">You Relax</span>
+            </h1>
+            <p className="mt-4 text-lg text-white/80">
+              Premium residential & commercial cleaning in Jesup and a 40-mile radius. Licensed & insured. Experience since 2019.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <a href="#book" className="btn btn-gold">Get a Free Quote</a>
+              <a href="tel:+19122026006" className="btn btn-outline"><Phone className="w-4 h-4" /> Call</a>
+            </div>
+            <ul className="mt-6 grid sm:grid-cols-3 gap-3 text-sm">
+              {[
+                { icon: <ShieldCheck className="w-4 h-4 text-brand-gold" />, text: "Licensed & Insured" },
+                { icon: <Sparkles className="w-4 h-4 text-brand-gold" />, text: "Premium products" },
+                { icon: <CheckCircle2 className="w-4 h-4 text-brand-gold" />, text: "100% Satisfaction" },
+              ].map((f, i) => (
+                <li key={i} className="flex items-center gap-2">{f.icon}<span>{f.text}</span></li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-2xl overflow-hidden border border-brand-gold/40 shadow-soft">
+            <img src="/foto_neatclean.JPG" alt="Founders" className="w-full h-80 object-cover" />
+          </div>
         </div>
       </section>
 
-      {/* Mission & Areas */}
-      <section className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-6">
-        <div className="rounded-2xl border p-6">
-          <h2 className="text-2xl font-bold">Our Mission</h2>
-          <p className="mt-2 text-slate-600">
-            Deliver premium cleaning that builds trust, comfort, and peace of mind for every home and business.
-          </p>
-        </div>
-        <div className="rounded-2xl border p-6">
-          <h2 className="text-2xl font-bold flex items-center gap-2"><MapPin className="w-5 h-5 text-emerald-600" />Service Areas</h2>
-          <p className="mt-2 text-slate-600">Jesup + 40 miles: Waycross, Brunswick, Hinesville, Pooler, Richmond Hill.</p>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="max-w-6xl mx-auto px-4 py-10">
-        <h2 className="text-2xl font-bold">FAQ</h2>
-        <div className="mt-4 space-y-3">
-          {faqs.map((f, i) => (
-            <details key={i} className="rounded-xl border p-4">
-              <summary className="cursor-pointer font-medium">{f.q}</summary>
-              <p className="mt-2 text-slate-700">{f.a}</p>
-            </details>
+      {/* HOW IT WORKS (3 pasos) */}
+      <section className="max-w-6xl mx-auto px-4 py-12">
+        <h2 className="text-2xl font-bold text-center">How it works</h2>
+        <div className="mt-6 grid md:grid-cols-3 gap-6">
+          {[
+            { title: "Tell us about your home", desc: "Bedrooms, bathrooms, pets, preferred date.", icon: <Calendar className="w-5 h-5 text-brand-gold" /> },
+            { title: "We clean — you relax", desc: "Standard, Deep, Move in/out, Commercial.", icon: <Sparkles className="w-5 h-5 text-brand-gold" /> },
+            { title: "Enjoy a spotless place", desc: "Quality check and satisfaction guarantee.", icon: <CheckCircle2 className="w-5 h-5 text-brand-gold" /> },
+          ].map((s, i) => (
+            <div key={i} className="rounded-2xl border p-5">
+              <div className="flex items-center gap-2 font-semibold">{s.icon}{s.title}</div>
+              <p className="mt-2 text-slate-600">{s.desc}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Contact */}
-      <section id="book" className="bg-emerald-600 py-12">
+      {/* AREAS */}
+      <section className="bg-gradient-to-b from-white to-amber-50/30">
+        <div className="max-w-6xl mx-auto px-4 py-10 rounded-2xl">
+          <h2 className="text-2xl font-bold flex items-center gap-2"><MapPin className="w-5 h-5 text-brand-gold" /> Service Areas</h2>
+          <p className="mt-2 text-slate-700">Jesup and a 40-mile radius: Waycross, Brunswick, Hinesville, Pooler, Richmond Hill.</p>
+        </div>
+      </section>
+
+      {/* REVIEWS (placeholder simple) */}
+      <section className="max-w-6xl mx-auto px-4 py-10">
+        <h2 className="text-2xl font-bold">What clients say</h2>
+        <div className="mt-4 grid md:grid-cols-3 gap-4">
+          {[
+            "They did a fantastic deep clean before our move! — Sarah K.",
+            "On time, professional and spotless results. — Mike R.",
+            "Highly recommend. Great communication and quality. — Ana P.",
+          ].map((t, i) => (
+            <div key={i} className="rounded-2xl border p-5">{t}</div>
+          ))}
+        </div>
+      </section>
+
+      {/* GALERÍA con subida */}
+      <Gallery />
+
+      {/* CTA final negro */}
+      <section id="book" className="bg-brand-black text-white py-12">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
-          <div className="text-white">
-            <h2 className="text-3xl font-bold">Schedule your cleaning</h2>
-            <p className="mt-1 text-emerald-50">Tell us square footage, bathrooms, pets and preferred date.</p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <a href="tel:+19122026006" className="bg-white text-emerald-700 px-4 py-2 rounded inline-flex items-center gap-2">
-                <Phone className="w-4 h-4" /> Call
-              </a>
-              <a href="mailto:neatclean012@gmail.com" className="border border-white/40 px-4 py-2 rounded text-white">Email us</a>
-              <a href="https://wa.me/19122026006" className="border border-white/40 px-4 py-2 rounded text-white inline-flex items-center gap-2">
-                <MessageCircle className="w-4 h-4" /> WhatsApp
-              </a>
+          <div>
+            <h2 className="text-3xl font-bold">Get your free, no-obligation quote</h2>
+            <p className="mt-1 text-white/80">Tell us square footage, bathrooms, pets and preferred date.</p>
+            <div className="mt-5 flex gap-3">
+              <a href="tel:+19122026006" className="btn btn-gold"><Phone className="w-4 h-4" /> Call</a>
+              <a href="mailto:neatclean012@gmail.com" className="btn btn-outline">Email</a>
+              <a href="https://wa.me/19122026006" className="btn btn-outline"><MessageCircle className="w-4 h-4" /> WhatsApp</a>
             </div>
           </div>
-          <form className="bg-white rounded-2xl p-6 shadow grid gap-4">
+
+          {/* Formulario dummy (visual) */}
+          <form className="bg-white rounded-2xl p-6 shadow-soft grid gap-4">
             <input className="border rounded px-3 py-2" placeholder="Name" />
             <div className="grid sm:grid-cols-2 gap-4">
               <input className="border rounded px-3 py-2" placeholder="Email" />
               <input className="border rounded px-3 py-2" placeholder="Phone" />
             </div>
             <select className="border rounded px-3 py-2">
-              <option>Standard Clean</option><option>Deep Clean</option><option>Move In/Out</option><option>Commercial</option>
+              <option>Standard Clean</option>
+              <option>Deep Clean</option>
+              <option>Move In/Out</option>
+              <option>Commercial</option>
             </select>
             <textarea className="border rounded px-3 py-2" rows={4} placeholder="Square footage, bathrooms, pets, preferred date..." />
-            <button type="button" className="bg-emerald-600 text-white px-4 py-2 rounded">Send request</button>
+            <button type="button" className="btn btn-gold">Send request</button>
           </form>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 bg-slate-900 text-slate-300">
-        <div className="max-w-6xl mx-auto px-4 text-center sm:text-left">
-          © {new Date().getFullYear()} NeatClean Pros LLC — Jesup, GA
-        </div>
+      <footer className="py-8 bg-brand-black text-white/80 text-center">
+        © {new Date().getFullYear()} NeatClean Pros LLC — Jesup, GA
       </footer>
     </div>
   );
