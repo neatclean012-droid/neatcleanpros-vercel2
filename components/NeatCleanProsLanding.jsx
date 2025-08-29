@@ -1,3 +1,4 @@
+import FAQ from "./FAQ";
 import React, { useEffect, useState } from "react";
 import { Phone, Calendar, MessageCircle, MapPin, ShieldCheck, Sparkles, CheckCircle2, Upload } from "lucide-react";
 
@@ -157,6 +158,10 @@ export default function NeatCleanProsLanding() {
           <p className="mt-2 text-slate-700">Jesup and a 40-mile radius: Waycross, Brunswick, Hinesville, Pooler, Richmond Hill.</p>
         </div>
       </section>
+      
+      {/* FAQ Section */}
+<FAQ />
+
 
       {/* REVIEWS (placeholder simple) */}
       <section className="max-w-6xl mx-auto px-4 py-10">
