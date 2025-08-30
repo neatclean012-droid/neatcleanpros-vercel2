@@ -20,6 +20,7 @@ import {
   Upload,
 } from "lucide-react";
 
+import Comments from "./Comments";
 export default function NeatCleanProsLanding() {
   const PHONE = "+19122026006";
   const EMAIL = "neatclean012@gmail.com";
@@ -492,7 +493,24 @@ Phone: ${data.phone || "-"}  Email: ${data.email}`;
           <FAQ />
         </div>
       </section>
+      
+{/* COMMENTS */}
+<section id="comments" className="py-16 bg-white">
+  <div className="max-w-6xl mx-auto px-4">
+    <h2 className="text-3xl font-extrabold text-center text-slate-900">
+      Customer Comments
+    </h2>
+    <p className="mt-2 text-center text-slate-500">
+      Real feedback from NeatClean Pros clients.
+    </p>
 
+    <div className="mt-10">
+      <Comments />
+    </div>
+  </div>
+</section>
+
+      
       {/* ========= GALLERY (opcional) ========= */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
@@ -553,7 +571,3 @@ Phone: ${data.phone || "-"}  Email: ${data.email}`;
     </div>
   );
 }
-import Comments from "./Comments";
-
-// ...dentro del return, donde quieras mostrarlo:
-<Comments />
