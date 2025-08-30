@@ -1,3 +1,4 @@
+import RecentWork from '../components/RecentWork';
 import Head from 'next/head'
 import NeatCleanProsLanding from '../components/NeatCleanProsLanding'
 
