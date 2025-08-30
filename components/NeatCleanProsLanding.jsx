@@ -25,6 +25,8 @@ export default function NeatCleanProsLanding() {
   const PHONE = "+19122026006";
   const EMAIL = "neatclean012@gmail.com";
 
+import RecentWork from "./RecentWork";
+
   /* ------------------------ GALERÍA (opcional Cloudinary) ------------------------ */
   const [photos, setPhotos] = useState([
     // Puedes iniciar con fotos locales si quieres (coméntalas si no las tienes)
@@ -493,43 +495,8 @@ Phone: ${data.phone || "-"}  Email: ${data.email}`;
           <FAQ />
         </div>
       </section>
-      
-      {/* ========= GALLERY (opcional) ========= */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Recent Work</h2>
-            {cloudName && uploadPreset ? (
-              <button
-                onClick={openWidget}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700"
-              >
-                <Upload className="w-4 h-4" />
-                Upload work photos
-              </button>
-            ) : null}
-          </div>
 
-          {photos.length === 0 ? (
-            <p className="text-slate-500">
-              Load your portfolio here. Configure Cloudinary to enable uploads
-              (env: <code>NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME</code> and{" "}
-              <code>NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET</code>).
-            </p>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {photos.map((src, i) => (
-                <img
-                  key={i}
-                  src={src}
-                  alt={`work-${i}`}
-                  className="rounded-xl border object-cover h-44 w-full"
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      <RecentWork />     
 
       <Comments />
       
