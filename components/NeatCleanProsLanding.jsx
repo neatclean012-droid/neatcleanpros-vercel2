@@ -494,23 +494,6 @@ Phone: ${data.phone || "-"}  Email: ${data.email}`;
         </div>
       </section>
       
-{/* COMMENTS */}
-<section id="comments" className="py-16 bg-white">
-  <div className="max-w-6xl mx-auto px-4">
-    <h2 className="text-3xl font-extrabold text-center text-slate-900">
-      Customer Comments
-    </h2>
-    <p className="mt-2 text-center text-slate-500">
-      Real feedback from NeatClean Pros clients.
-    </p>
-
-    <div className="mt-10">
-      <Comments />
-    </div>
-  </div>
-</section>
-
-      
       {/* ========= GALLERY (opcional) ========= */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
@@ -548,6 +531,8 @@ Phone: ${data.phone || "-"}  Email: ${data.email}`;
         </div>
       </section>
 
+      <Comments />
+      
       {/* ========= FOOTER ========= */}
       <footer className="py-10 bg-slate-900 text-slate-300">
         <div className="max-w-6xl mx-auto px-4 text-sm">
