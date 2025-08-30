@@ -1,21 +1,22 @@
 // components/Comments.jsx
 import React, { useEffect, useState } from "react";
-import { Star } from "lucide-react";
+import { Star, Send, MessageCircle } from "lucide-react";
 
-function Stars({ value, onChange }) {
+function StarInput({ value, onChange }) {
   return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((n) => (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((i) => (
         <button
-          key={n}
+          key={i}
           type="button"
-          onClick={() => onChange(n)}
-          aria-label={`${n} star${n > 1 ? "s" : ""}`}
+          onClick={() => onChange(i)}
           className="p-1"
+          aria-label={`Rate ${i} star${i > 1 ? "s" : ""}`}
+          title={`Rate ${i}`}
         >
           <Star
-            className={`w-5 h-5 ${
-              n <= value ? "fill-yellow-400 text-yellow-400" : "text-slate-400"
+            className={`h-5 w-5 ${
+              i <= value ? "fill-amber-400 text-amber-400" : "text-slate-300"
             }`}
           />
         </button>
@@ -24,140 +25,202 @@ function Stars({ value, onChange }) {
   );
 }
 
+function StarRow({ value }) {
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star
+          key={i}
+          className={`h-4 w-4 ${
+            i <= value ? "fill-amber-400 text-amber-400" : "text-slate-300"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Comments() {
-  const STORAGE_KEY = "neatcleanpros_comments_v1";
   const [items, setItems] = useState([]);
   const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
+  const [text, setText] = useState("");
   const [rating, setRating] = useState(5);
 
-  // cargar desde localStorage
+  // Cargar reseñas (localStorage)
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setItems(JSON.parse(raw));
+      const saved = localStorage.getItem("nc_comments");
+      if (saved) setItems(JSON.parse(saved));
+      else {
+        // Semillas iniciales
+        setItems([
+          {
+            id: "c1",
+            name: "Sarah K.",
+            rating: 5,
+            text:
+              "They did a fantastic deep clean before our move! On time and very professional.",
+            date: new Date().toISOString(),
+          },
+          {
+            id: "c2",
+            name: "Mike R.",
+            rating: 5,
+            text: "Quick quote and spotless results. Highly recommend.",
+            date: new Date(Date.now() - 86400000).toISOString(),
+          },
+        ]);
+      }
     } catch {}
   }, []);
 
-  // guardar al cambiar
+  // Guardar reseñas (localStorage)
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      localStorage.setItem("nc_comments", JSON.stringify(items));
     } catch {}
   }, [items]);
 
-  function addComment(e) {
-    e.preventDefault();
-    if (!name.trim() || !message.trim()) return;
+  const avg =
+    items.length === 0
+      ? 0
+      : Math.round(
+          (items.reduce((a, c) => a + (c.rating || 0), 0) / items.length) * 10
+        ) / 10;
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!name.trim() || !text.trim()) return;
     const newItem = {
       id: crypto.randomUUID(),
       name: name.trim(),
-      message: message.trim(),
+      text: text.trim(),
       rating,
       date: new Date().toISOString(),
     };
     setItems([newItem, ...items]);
     setName("");
-    setMessage("");
+    setText("");
     setRating(5);
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-12">
-      <h2 className="text-2xl font-bold text-slate-100">
-        Comments
-      </h2>
-      <p className="text-slate-400 mt-1">
-        Tell us how we did — we love feedback!
-      </p>
+    <section id="reviews" className="py-16 bg-white">
+      <div className="max-w-3xl mx-auto px-4">
+        {/* Header */}
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-slate-900">
+            What Our Clients Say
+          </h2>
+          <p className="mt-2 text-slate-600">
+            Verified feedback from homes we clean around Jesup and nearby areas.
+          </p>
 
-      {/* Form */}
-      <form
-        onSubmit={addComment}
-        className="mt-6 bg-slate-900/60 border border-slate-800 rounded-xl p-5"
-      >
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-slate-200 mb-1">
-              Name
-            </label>
-            <input
-              className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/60"
-              placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-slate-200 mb-1">
-              Rating
-            </label>
-            <Stars value={rating} onChange={setRating} />
+          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-1">
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <span className="font-semibold text-slate-800">{avg || "5.0"}</span>
+            <span className="text-slate-500">
+              · {items.length} review{items.length !== 1 ? "s" : ""}
+            </span>
           </div>
         </div>
 
-        <div className="mt-4">
-          <label className="block text-sm font-semibold text-slate-200 mb-1">
-            Comment
-          </label>
-          <textarea
-            rows={4}
-            className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/60"
-            placeholder="They did a fantastic deep clean before our move!"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-        </div>
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="mt-10 rounded-2xl border border-slate-200 bg-white shadow-sm"
+        >
+          <div className="p-5 md:p-6">
+            <div className="flex items-center gap-2 text-slate-700">
+              <MessageCircle className="h-5 w-5 text-amber-500" />
+              <h3 className="text-lg font-semibold">Leave a review</h3>
+            </div>
 
-        <div className="mt-4">
-          <button
-            type="submit"
-            className="inline-flex items-center px-5 py-2 rounded-lg bg-amber-500 text-slate-900 font-semibold hover:bg-amber-400 transition"
-          >
-            Post comment
-          </button>
-        </div>
-      </form>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 shadow-sm focus:border-amber-500 focus:outline-none"
+                />
+              </div>
 
-      {/* Listado */}
-      <div className="mt-8 grid md:grid-cols-2 gap-4">
-        {items.length === 0 ? (
-          <div className="text-slate-400">
-            No comments yet. Be the first!
-          </div>
-        ) : (
-          items.map((c) => (
-            <article
-              key={c.id}
-              className="rounded-xl border border-slate-800 bg-slate-900/50 p-4"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-slate-100">{c.name}</h3>
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <Star
-                      key={n}
-                      className={`w-4 h-4 ${
-                        n <= c.rating
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "text-slate-500"
-                      }`}
-                    />
-                  ))}
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Rating
+                </label>
+                <div className="mt-2">
+                  <StarInput value={rating} onChange={setRating} />
                 </div>
               </div>
-              <p className="text-slate-300 mt-2 whitespace-pre-wrap">
-                {c.message}
-              </p>
-              <p className="text-xs text-slate-500 mt-3">
-                {new Date(c.date).toLocaleString()}
-              </p>
+            </div>
+
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-slate-700">
+                Comment
+              </label>
+              <textarea
+                rows={4}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Tell us how it went…"
+                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 shadow-sm focus:border-amber-500 focus:outline-none"
+              />
+            </div>
+
+            <div className="mt-5 flex justify-end">
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2 font-semibold text-white shadow-sm hover:bg-amber-600 active:bg-amber-700"
+              >
+                <Send className="h-4 w-4" />
+                Post review
+              </button>
+            </div>
+          </div>
+        </form>
+
+        {/* Listado */}
+        <div className="mt-8 space-y-4">
+          {items.map((c) => (
+            <article
+              key={c.id}
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-start gap-4">
+                {/* Avatar inicial */}
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-700 font-bold">
+                  {c.name?.[0]?.toUpperCase() || "N"}
+                </div>
+
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <h4 className="font-semibold text-slate-900">{c.name}</h4>
+                      <p className="text-xs text-slate-500">
+                        {new Date(c.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <StarRow value={c.rating || 5} />
+                  </div>
+
+                  <p className="mt-2 text-slate-700 leading-relaxed">{c.text}</p>
+                </div>
+              </div>
             </article>
-          ))
-        )}
+          ))}
+
+          {items.length === 0 && (
+            <p className="text-center text-slate-500">No reviews yet.</p>
+          )}
+        </div>
       </div>
     </section>
   );
 }
+
