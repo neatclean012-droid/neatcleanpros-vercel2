@@ -1,4 +1,5 @@
 // components/NeatCleanProsLanding.jsx
+import RecentWork from "./RecentWork";
 import React, { useEffect, useState } from "react";
 import FAQ from "./FAQ";
 import {
@@ -25,68 +26,6 @@ export default function NeatCleanProsLanding() {
   const PHONE = "+19122026006";
   const EMAIL = "neatclean012@gmail.com";
 
-import RecentWork from "./RecentWork";
-
-  /* ------------------------ GALERÍA (opcional Cloudinary) ------------------------ */
-  const [photos, setPhotos] = useState([
-    // Puedes iniciar con fotos locales si quieres (coméntalas si no las tienes)
-    // "/gallery/1.jpg",
-    // "/gallery/2.jpg"
-  ]);
-  const [widgetReady, setWidgetReady] = useState(false);
-  // Cloudinary env vars
-const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "";
-const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "";
-
-  useEffect(() => {
-    // carga script del widget si hay credenciales
-    if (!cloudName || !uploadPreset) return;
-    if (document.getElementById("cloudinary-widget")) return;
-
-    const s = document.createElement("script");
-    s.id = "cloudinary-widget";
-    s.src = "https://widget.cloudinary.com/v2.0/global/all.js";
-    s.onload = () => setWidgetReady(true);
-    document.body.appendChild(s);
-  }, [cloudName, uploadPreset]);
-
-  const openWidget = () => {
-    if (!window.cloudinary || !widgetReady) return;
-
-    const widget = window.cloudinary.createUploadWidget(
-      {
-        cloudName,
-        uploadPreset, // debe ser "unsigned"
-        multiple: true,
-        sources: ["local", "camera", "url"],
-        cropping: false,
-        folder: "neatcleanpros",
-        maxFileSize: 5_000_000,
-        styles: {
-          palette: {
-            window: "#0f172a",
-            windowBorder: "#0f172a",
-            tabIcon: "#E9B949",
-            menuIcons: "#ffffff",
-            textDark: "#ffffff",
-            link: "#E9B949",
-            action: "#E9B949",
-            inactiveTabIcon: "#E9B949",
-            error: "#ff4444",
-            complete: "#22c55e",
-            sourceBg: "#0f172a",
-          },
-        },
-      },
-      (err, result) => {
-        if (!err && result && result.event === "success") {
-          setPhotos((p) => [result.info.secure_url, ...p]);
-        }
-      }
-    );
-
-    widget.open();
-  };
 
   /* --------------------------------- UI helpers -------------------------------- */
   const openWhatsApp = (text) => {
