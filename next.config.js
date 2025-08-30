@@ -2,6 +2,6 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['res.cloudinary.com'], // permite imágenes de Cloudinary
+    domains: ['res.cloudinary.com'], // <-- necesario para mostrar tus URLs
   },
 };
