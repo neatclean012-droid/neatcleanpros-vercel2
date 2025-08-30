@@ -553,3 +553,7 @@ Phone: ${data.phone || "-"}  Email: ${data.email}`;
     </div>
   );
 }
+import Comments from "./Comments";
+
+// ...dentro del return, donde quieras mostrarlo:
+<Comments />
