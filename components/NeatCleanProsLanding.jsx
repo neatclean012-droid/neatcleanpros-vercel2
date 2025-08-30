@@ -20,12 +20,6 @@ import {
   Upload,
 } from "lucide-react";
 
-/**
- * Galería con subida opcional vía Cloudinary Upload Widget.
- * Si configuras CLOUDINARY_CLOUD_NAME y CLOUDINARY_UPLOAD_PRESET (unsigned),
- * verás un botón “Upload work photos”. Si no, solo muestra la galería local.
- */
-
 export default function NeatCleanProsLanding() {
   const PHONE = "+19122026006";
   const EMAIL = "neatclean012@gmail.com";
@@ -37,10 +31,9 @@ export default function NeatCleanProsLanding() {
     // "/gallery/2.jpg"
   ]);
   const [widgetReady, setWidgetReady] = useState(false);
-
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "";
-  const uploadPreset =
-    process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "";
+  // Cloudinary env vars
+const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "";
+const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "";
 
   useEffect(() => {
     // carga script del widget si hay credenciales
