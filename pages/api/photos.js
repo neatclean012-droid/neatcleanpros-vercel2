@@ -3,39 +3,37 @@ import { v2 as cloudinary } from 'cloudinary';
 
 const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = process.env;
 
-// Configuración privada (sin NEXT_PUBLIC_)
 cloudinary.config({
   cloud_name: CLOUDINARY_CLOUD_NAME,
   api_key: CLOUDINARY_API_KEY,
   api_secret: CLOUDINARY_API_SECRET,
 });
 
-// Carpeta EXACTA en Cloudinary
+// Carpeta EXACTA en Cloudinary (tú usas "neatcleanpros")
 const FOLDER = 'neatcleanpros';
 
-// Util para ordenar por fecha desc
+// Util para ordenar (más nuevas primero)
 const sortByCreatedDesc = (a, b) => new Date(b.created_at) - new Date(a.created_at);
 
 export default async function handler(req, res) {
   try {
-    // Validaciones rápidas de env vars
+    const debug = req.query.debug === '1';
+
+    // 1) Validar env vars
+    const envState = {
+      CLOUDINARY_CLOUD_NAME: CLOUDINARY_CLOUD_NAME || null,
+      CLOUDINARY_API_KEY: !!CLOUDINARY_API_KEY,
+      CLOUDINARY_API_SECRET: !!CLOUDINARY_API_SECRET,
+    };
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
-      return res.status(500).json({
-        error: 'missing_env',
-        details: {
-          CLOUDINARY_CLOUD_NAME: !!CLOUDINARY_CLOUD_NAME,
-          CLOUDINARY_API_KEY: !!CLOUDINARY_API_KEY,
-          CLOUDINARY_API_SECRET: !!CLOUDINARY_API_SECRET,
-        },
-      });
+      return res.status(500).json({ error: 'missing_env', envState });
     }
 
-    // ********* Método estable: Admin API (NO Search) *********
-    // Lista imágenes por prefijo de carpeta y ordenamos en código.
+    // 2) Admin API estable (sin Search)
     const result = await cloudinary.api.resources({
       type: 'upload',
       resource_type: 'image',
-      prefix: `${FOLDER}/`,   // incluye subcarpetas
+      prefix: `${FOLDER}/`,   // carpeta + subcarpetas
       max_results: 100,
     });
 
@@ -43,8 +41,18 @@ export default async function handler(req, res) {
       .sort(sortByCreatedDesc)
       .map(r => r.secure_url);
 
+    // 3) Respuesta
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-    return res.status(200).json({ images, count: images.length, folder: FOLDER });
+    if (debug) {
+      return res.status(200).json({
+        ok: true,
+        folder: FOLDER,
+        count: images.length,
+        sample: images.slice(0, 3),
+        envState,
+      });
+    }
+    return res.status(200).json({ images });
   } catch (err) {
     console.error('[cloudinary_failed]', err?.error || err);
     return res.status(500).json({
@@ -53,3 +61,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
