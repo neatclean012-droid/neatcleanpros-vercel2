@@ -1,13 +1,15 @@
 // components/NeatCleanProsLanding.jsx
 import RecentWork from "./RecentWork";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FAQ from "./FAQ";
 import {
+  // contacto / UI
   Phone,
   Mail,
   MessageCircle,
   Calendar,
   MapPin,
+  // icons de secciones
   Sparkles,
   CheckCircle2,
   ShieldCheck,
@@ -15,6 +17,8 @@ import {
   Clock,
   Sliders,
   Star,
+  // galería opcional
+  Upload,
 } from "lucide-react";
 
 import Comments from "./Comments";
@@ -22,6 +26,13 @@ export default function NeatCleanProsLanding() {
   const PHONE = "+19122026006";
   const EMAIL = "neatclean012@gmail.com";
 
+  /* --------------------------------- UI helpers -------------------------------- */
+  const openWhatsApp = (text) => {
+    const url = `https://wa.me/19122026006?text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank");
+  };
+
+  /* --------------------------------- RENDER UI --------------------------------- */
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-800">
       {/* ========= Top Bar ========= */}
@@ -245,7 +256,7 @@ export default function NeatCleanProsLanding() {
             </div>
           </div>
 
-          {/* Form */}
+          {/* Form — ENVIAR A EMAIL (API) */}
           <form
             noValidate
             onSubmit={async (e) => {
@@ -448,9 +459,29 @@ export default function NeatCleanProsLanding() {
         </div>
       </section>
 
-      <RecentWork />     
-
+      <RecentWork />
       <Comments />
-      
+
       {/* ========= FOOTER ========= */}
-      <footer className="py-10 bg-slate-
+      <footer className="py-10 bg-slate-900 text-slate-300">
+        <div className="max-w-6xl mx-auto px-4 text-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <p>© {new Date().getFullYear()} NeatClean Pros LLC. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <a href="#" className="hover:text-white">
+                Terms
+              </a>
+              <a href="#" className="hover:text-white">
+                Privacy
+              </a>
+              <a href={`mailto:${EMAIL}`} className="hover:text-white inline-flex items-center gap-1">
+                <Mail className="w-4 h-4" />
+                {EMAIL}
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
