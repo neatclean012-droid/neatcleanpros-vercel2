@@ -1,10 +1,12 @@
 // pages/api/quote.js
-import nodemailer from "nodemailer";
+export const config = { runtime: "nodejs" }; // asegura Node (no Edge)
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "Method not allowed" });
 
   try {
+    const { default: nodemailer } = await import("nodemailer"); // import dinámico
     const { zip, beds, baths, date, time, phone, email } = req.body || {};
 
     const text = [
@@ -20,10 +22,13 @@ export default async function handler(req, res) {
     ].join("\n");
 
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: process.env.SMTP_SECURE === "true",
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      host: process.env.SMTP_HOST,                // ej: smtp.office365.com / smtp.gmail.com
+      port: Number(process.env.SMTP_PORT || 587), // 587 con STARTTLS
+      secure: process.env.SMTP_SECURE === "true", // false para 587
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
     });
 
     await transporter.sendMail({
@@ -35,9 +40,10 @@ export default async function handler(req, res) {
       replyTo: email || undefined,
     });
 
-    return res.status(200).json({ ok: true });
+    res.status(200).json({ ok: true });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: err.message || "Mail error" });
+    res.status(500).json({ error: err.message || "Mail error" });
   }
 }
+
