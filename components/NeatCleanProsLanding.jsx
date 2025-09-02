@@ -259,40 +259,44 @@ export default function NeatCleanProsLanding() {
           {/* Form — ENVIAR A EMAIL (API) */}
           <form
             noValidate
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const data = Object.fromEntries(new FormData(e.currentTarget));
+              onSubmit={async (e) => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.currentTarget));
 
-              const payload = {
-                zip: String(data.zip || "").trim(),
-                beds: data.beds || "",
-                baths: data.baths || "",
-                date: data.date || "",
-                time: data.time || "",
-                phone: String(data.phone || "").trim(),
-                email: String(data.email || "").trim(),
-              };
+  const payload = {
+    zip: String(data.zip || "").trim(),
+    beds: data.beds || "",
+    baths: data.baths || "",
+    date: data.date || "",
+    time: data.time || "",
+    phone: String(data.phone || "").trim(),
+    email: String(data.email || "").trim(),
+  };
 
-              try {
-                const res = await fetch("/api/quote", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(payload),
-                });
+  try {
+    const res = await fetch("/api/quote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-                if (!res.ok) {
-                  const { error } = await res.json().catch(() => ({ error: "Error" }));
-                  alert("No se pudo enviar el formulario: " + (error || res.statusText));
-                  return;
-                }
+    if (!res.ok) {
+      // lee texto primero, si no es JSON
+      const raw = await res.text();
+      let msg = raw;
+      try { msg = JSON.parse(raw).error || raw; } catch {}
+      alert("No se pudo enviar el formulario: " + (msg || res.statusText));
+      return;
+    }
 
-                alert("¡Solicitud enviada! Te contactaremos pronto.");
-                e.currentTarget.reset();
-              } catch (err) {
-                alert("Error de red al enviar el formulario.");
-                console.error(err);
-              }
-            }}
+    alert("¡Solicitud enviada! Te contactaremos pronto.");
+    e.currentTarget.reset();
+  } catch (err) {
+    alert("Error de red al enviar el formulario.");
+    console.error(err);
+  }
+}}
+           
             className="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 md:p-8"
           >
             {/* estilo base para campos */}
